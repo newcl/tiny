@@ -39,6 +39,7 @@ func main() {
 	listenAddr := flag.String("listen", ":8080", "HTTP listen address")
 	beanstalkAddr := flag.String("beanstalk-addr", "127.0.0.1:11300", "beanstalkd address")
 	tube := flag.String("tube", "jobs", "beanstalkd tube name")
+	corsOrigin := flag.String("cors-origin", "*", "allowed CORS origin, example: http://127.0.0.1:5173")
 	defaultPriority := flag.Uint("priority", 1024, "default job priority (lower is higher priority)")
 	defaultDelay := flag.Duration("delay", 0, "default job delay")
 	defaultTTR := flag.Duration("ttr", 30*time.Second, "default job time-to-run")
@@ -64,7 +65,7 @@ func main() {
 
 	httpServer := &http.Server{
 		Addr:              *listenAddr,
-		Handler:           mux,
+		Handler:           withCORS(mux, *corsOrigin),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       10 * time.Second,
 		WriteTimeout:      10 * time.Second,
@@ -177,4 +178,23 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 
 func writeError(w http.ResponseWriter, status int, message string) {
 	writeJSON(w, status, errorResponse{Error: message})
+}
+
+func withCORS(next http.Handler, allowedOrigin string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if allowedOrigin == "" {
+			allowedOrigin = "*"
+		}
+
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,Authorization")
+
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }

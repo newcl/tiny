@@ -47,7 +47,8 @@ Run API server:
 go run ./cmd/api \
   -listen :8080 \
   -beanstalk-addr 127.0.0.1:11300 \
-  -tube jobs
+  -tube jobs \
+  -cors-origin http://127.0.0.1:5173
 ```
 
 Health check:
@@ -71,6 +72,24 @@ curl -sS -X POST "http://127.0.0.1:8080/jobs?priority=512&delay_seconds=2&ttr_se
   -H "Content-Type: application/json" \
   -d '{"type":"report","report_id":"rpt_123"}'
 ```
+
+## Frontend (React) queue console
+
+Run in a second terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open:
+
+```text
+http://127.0.0.1:5173
+```
+
+The UI posts JSON jobs to your API endpoint and lets you override priority, delay, and TTR.
 
 ## Package usage
 

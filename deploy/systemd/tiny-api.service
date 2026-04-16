@@ -7,7 +7,7 @@ Wants=beanstalkd.service
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/git_projects/tiny
-ExecStart=/usr/local/bin/tiny-api -listen :8080 -beanstalk-addr 127.0.0.1:11300 -tube jobs
+ExecStart=/usr/local/bin/tiny-api -listen :8080 -beanstalk-addr 127.0.0.1:11300 -tube jobs -cors-origin https://tinyjobsui.elladali.com
 Restart=always
 RestartSec=3
 Environment=TZ=UTC
