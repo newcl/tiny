@@ -2,6 +2,8 @@ package beanqueue
 
 import (
 	"errors"
+	"fmt"
+	"math"
 	"time"
 
 	"github.com/beanstalkd/go-beanstalk"
@@ -87,7 +89,14 @@ func (c *Client) Bury(id uint64, priority uint32) error {
 }
 
 func (c *Client) Kick(bound uint64) (uint64, error) {
-	return c.conn.Kick(bound)
+	if bound > uint64(math.MaxInt) {
+		return 0, fmt.Errorf("kick bound exceeds max int: %d", bound)
+	}
+	kicked, err := c.conn.Kick(int(bound))
+	if err != nil {
+		return 0, err
+	}
+	return uint64(kicked), nil
 }
 
 func (c *Client) StatsTube() (map[string]string, error) {
