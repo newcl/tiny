@@ -1,0 +1,23 @@
+[Unit]
+Description=tiny beanstalkd worker
+After=network.target beanstalkd.service
+Wants=beanstalkd.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/git_projects/tiny
+ExecStart=/home/ubuntu/git_projects/tiny/bin/worker -addr 127.0.0.1:11300 -tube jobs
+Restart=always
+RestartSec=3
+Environment=TZ=UTC
+
+# Optional hardening for production:
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/home/ubuntu/git_projects/tiny
+
+[Install]
+WantedBy=multi-user.target
