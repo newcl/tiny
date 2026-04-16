@@ -91,6 +91,40 @@ http://127.0.0.1:5173
 
 The UI posts JSON jobs to your API endpoint and lets you override priority, delay, and TTR.
 
+### Deploy frontend to Cloudflare Pages
+
+Commands used:
+
+```bash
+cd frontend
+npm install
+npm run build
+npx wrangler --version
+npx wrangler pages project list
+```
+
+Create project once if missing:
+
+```bash
+npx wrangler pages project create tinyjobsui --production-branch main
+```
+
+Deploy current build:
+
+```bash
+npx wrangler pages deploy dist --project-name tinyjobsui --branch main
+```
+
+Deployed URLs:
+
+- https://tinyjobsui.pages.dev
+- Deployment preview URL is printed after each deploy command.
+
+Custom domain note:
+
+- Wrangler v4.83.0 does not support adding Pages custom domains via CLI.
+- Add `tinyjobsui.elladali.com` in Cloudflare Dashboard: Pages -> tinyjobsui -> Custom domains.
+
 ## Package usage
 
 ```go

@@ -1,0 +1,45 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Go build/test artifacts
+bin/
+dist/
+*.out
+*.test
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+coverage.out
+*.coverprofile
+
+# Frontend dependencies/build cache
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
