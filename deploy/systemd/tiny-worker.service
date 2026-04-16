@@ -7,7 +7,7 @@ Wants=beanstalkd.service
 Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/git_projects/tiny
-ExecStart=/home/ubuntu/git_projects/tiny/bin/worker -addr 127.0.0.1:11300 -tube jobs
+ExecStart=/usr/local/bin/tiny-worker -addr 127.0.0.1:11300 -tube jobs
 Restart=always
 RestartSec=3
 Environment=TZ=UTC
@@ -16,7 +16,8 @@ Environment=TZ=UTC
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=full
-ProtectHome=true
+# Keep this false when executable/config lives under /home/ubuntu.
+ProtectHome=false
 ReadWritePaths=/home/ubuntu/git_projects/tiny
 
 [Install]
