@@ -21,6 +21,8 @@ SERVICE_NAME="${SERVICE_NAME:-tiny-worker}"
 INSTALL_BIN="${INSTALL_BIN:-/usr/local/bin/tiny-worker}"
 PROJECT_DIR="${PROJECT_DIR:-$HOME/git_projects/tiny}"
 OUTPUT_BIN="${OUTPUT_BIN:-bin/worker}"
+UNIT_SOURCE="${UNIT_SOURCE:-deploy/systemd/tiny-worker.service}"
+UNIT_TARGET="${UNIT_TARGET:-/etc/systemd/system/tiny-worker.service}"
 
 if ! command -v go >/dev/null 2>&1; then
   echo "go command not found. Install Go first."
@@ -60,10 +62,19 @@ chmod 0755 "$OUTPUT_BIN"
 echo "Installing worker binary to $INSTALL_BIN"
 sudo install -m 0755 "$OUTPUT_BIN" "$INSTALL_BIN"
 
+if [[ -f "$UNIT_SOURCE" ]]; then
+  echo "Installing systemd unit from $UNIT_SOURCE to $UNIT_TARGET"
+  sudo install -m 0644 "$UNIT_SOURCE" "$UNIT_TARGET"
+else
+  echo "Warning: unit file not found at $UNIT_SOURCE; keeping existing systemd unit"
+fi
+
 echo "Reloading and restarting systemd service: $SERVICE_NAME"
 sudo systemctl daemon-reload
 sudo systemctl restart "$SERVICE_NAME"
 sudo systemctl status "$SERVICE_NAME" --no-pager -l
+echo "Loaded ExecStart:"
+sudo systemctl show "$SERVICE_NAME" -p ExecStart
 
 echo
 echo "Done. Worker installed at: $INSTALL_BIN"
