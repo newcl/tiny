@@ -12,7 +12,7 @@ function defaultApiBase() {
   if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
     return "http://127.0.0.1:8080";
   }
-  return "";
+  return "https://tinyjobsapi.elladali.com";
 }
 
 function networkHint(apiBase) {
