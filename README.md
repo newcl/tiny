@@ -39,6 +39,39 @@ go run ./cmd/worker \
   -tube emails
 ```
 
+## REST API example
+
+Run API server:
+
+```bash
+go run ./cmd/api \
+  -listen :8080 \
+  -beanstalk-addr 127.0.0.1:11300 \
+  -tube jobs
+```
+
+Health check:
+
+```bash
+curl -sS http://127.0.0.1:8080/healthz
+```
+
+Submit a job to queue:
+
+```bash
+curl -sS -X POST "http://127.0.0.1:8080/jobs" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"email","to":"user@example.com","subject":"Hello"}'
+```
+
+Submit with per-job options:
+
+```bash
+curl -sS -X POST "http://127.0.0.1:8080/jobs?priority=512&delay_seconds=2&ttr_seconds=60" \
+  -H "Content-Type: application/json" \
+  -d '{"type":"report","report_id":"rpt_123"}'
+```
+
 ## Package usage
 
 ```go
