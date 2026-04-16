@@ -6,8 +6,26 @@ const initialPayload = {
   subject: "Hello from tiny"
 };
 
+function defaultApiBase() {
+  const fromEnv = import.meta.env.VITE_API_BASE;
+  if (fromEnv) return fromEnv;
+  if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    return "http://127.0.0.1:8080";
+  }
+  return "";
+}
+
+function networkHint(apiBase) {
+  const isPageHttps = window.location.protocol === "https:";
+  const isApiHttp = apiBase.startsWith("http://");
+  if (isPageHttps && isApiHttp) {
+    return "Likely mixed-content block: your page is HTTPS but API URL is HTTP. Use an HTTPS API URL.";
+  }
+  return "Check API URL reachability, CORS origin, and firewall/network rules.";
+}
+
 function App() {
-  const [apiBase, setApiBase] = useState("http://127.0.0.1:8080");
+  const [apiBase, setApiBase] = useState(defaultApiBase);
   const [payloadText, setPayloadText] = useState(JSON.stringify(initialPayload, null, 2));
   const [priority, setPriority] = useState("1024");
   const [delaySeconds, setDelaySeconds] = useState("0");
@@ -50,7 +68,7 @@ function App() {
       }
       setResult(`Queued job ${data.job_id} in tube ${data.tube}`);
     } catch (err) {
-      setResult(`Network error: ${err.message}`);
+      setResult(`Network error: ${err.message}. ${networkHint(apiBase)}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -65,7 +83,7 @@ function App() {
         <form onSubmit={onSubmit} className="stack">
           <label>
             API Base URL
-            <input value={apiBase} onChange={(e) => setApiBase(e.target.value)} placeholder="http://127.0.0.1:8080" />
+            <input value={apiBase} onChange={(e) => setApiBase(e.target.value)} placeholder="https://your-api-domain" />
           </label>
 
           <div className="row">

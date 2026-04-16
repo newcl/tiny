@@ -91,6 +91,27 @@ http://127.0.0.1:5173
 
 The UI posts JSON jobs to your API endpoint and lets you override priority, delay, and TTR.
 
+Set API base URL for deployed frontend:
+
+```bash
+# local dev
+VITE_API_BASE=http://127.0.0.1:8080 npm run dev
+
+# build with explicit API base
+VITE_API_BASE=https://your-api-domain npm run build
+```
+
+Cloudflare Pages:
+
+- Add environment variable `VITE_API_BASE` in Pages project settings.
+- Set it to your public HTTPS API URL.
+
+If you see `Network error: Failed to fetch` when submitting:
+
+- Your frontend is HTTPS but API URL is HTTP (mixed content blocked), or
+- API is not publicly reachable, or
+- API CORS origin does not include your frontend domain.
+
 ### Deploy frontend to Cloudflare Pages
 
 Commands used:
